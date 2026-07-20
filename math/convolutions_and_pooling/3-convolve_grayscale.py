@@ -4,7 +4,6 @@ Performs convolution on grayscale images.
 """
 
 import numpy as np
-from math import ceil
 
 
 def convolve_grayscale(images, kernel,
@@ -14,13 +13,13 @@ def convolve_grayscale(images, kernel,
     Performs convolution on grayscale images.
 
     Args:
-        images: ndarray of shape (m, h, w)
-        kernel: ndarray of shape (kh, kw)
-        padding: 'same', 'valid', or (ph, pw)
-        stride: (sh, sw)
+        images: numpy.ndarray with shape (m, h, w)
+        kernel: numpy.ndarray with shape (kh, kw)
+        padding: 'same', 'valid', or tuple (ph, pw)
+        stride: tuple (sh, sw)
 
     Returns:
-        ndarray containing convolved images.
+        numpy.ndarray containing convolved images.
     """
 
     m, h, w = images.shape
@@ -28,8 +27,8 @@ def convolve_grayscale(images, kernel,
     sh, sw = stride
 
     if padding == 'same':
-        ph = int((((h - 1) * sh + kh - h) / 2))
-        pw = int((((w - 1) * sw + kw - w) / 2))
+        ph = ((h - 1) * sh + kh - h) // 2
+        pw = ((w - 1) * sw + kw - w) // 2
 
     elif padding == 'valid':
         ph = 0
