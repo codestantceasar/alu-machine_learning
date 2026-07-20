@@ -1,0 +1,6 @@
+*.npz
+__pycache__/
+*.pyc
+0-main.py
+check.py
+convert.py
