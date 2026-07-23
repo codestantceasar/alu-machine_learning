@@ -61,4 +61,5 @@ class MultiNormal:
 
         pdf_value = np.exp(exponent) / denominator
 
-        return pdf_value.item()
+        return float(np.format_float_positional(pdf_value.item(), precision=19))
+
