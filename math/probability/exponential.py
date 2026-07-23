@@ -25,3 +25,18 @@ class Exponential:
             # For exponential distribution, lambtha = 1 / mean
             mean = sum(data) / len(data)
             self.lambtha = float(1 / mean)
+
+    def pdf(self, x):
+        """
+        Calculates the value of the PDF for a given time period.
+        """
+        # If x is out of range (less than 0), return 0
+        if x < 0:
+            return 0
+
+        # Define Euler's number explicitly as required by the project
+        e = 2.7182818285
+
+        # Calculate and return Exponential PDF: lambtha * e^(-lambtha * x)
+        pdf_value = self.lambtha * (e ** (-self.lambtha * x))
+        return pdf_value
