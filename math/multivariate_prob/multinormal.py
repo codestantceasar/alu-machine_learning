@@ -1,48 +1,57 @@
 #!/usr/bin/env python3
-"""Defines a class MultiNormal that represents a Multivariate Normal"""
+"""Calculates the PDF of a multivariate normal distribution"""
 import numpy as np
 
 
 class MultiNormal:
-    """Represents a Multivariate Normal distribution"""
+    """Represents a multivariate normal distribution"""
 
     def __init__(self, data):
-        """Initializes class attributes mean and covariance"""
+        """
+        Initialization of MultiNormal
+        data: numpy.ndarray of shape (d, n)
+        """
         if not isinstance(data, np.ndarray) or len(data.shape) != 2:
             raise TypeError("data must be a 2D numpy.ndarray")
-        
+
         d, n = data.shape
         if n < 2:
             raise ValueError("data must contain multiple data points")
 
-        # Calculate Mean (shape d x 1)
+        # Calculate mean vector of shape (d, 1)
         self.mean = np.mean(data, axis=1, keepdims=True)
 
-        # Calculate Covariance without using np.cov
-        centered_data = data - self.mean
-        self.co = np.matmul(centered_data, centered_data.T) / (n - 1)
+        # Calculate covariance matrix without np.cov
+        X_deviations = data - self.mean
+        self.cov = np.dot(X_deviations, X_deviations.T) / (n - 1)
 
     def pdf(self, x):
-        """Calculates the PDF at a given data point x"""
+        """
+        Calculates the PDF at a specific data point
+        x: numpy.ndarray of shape (d, 1)
+        Returns: the PDF value (float)
+        """
         if not isinstance(x, np.ndarray):
             raise TypeError("x must be a numpy.ndarray")
 
         d = self.mean.shape[0]
-        if len(x.shape) != 2 or x.shape != (d, 1):
+
+        if x.shape != (d, 1):
             raise ValueError("x must have the shape ({}, 1)".format(d))
 
-        # Setup math variables
-        det = np.linalg.det(self.co)
-        inv = np.linalg.inv(self.co)
-        
-        # Calculate the exponent components: (x - mean)^T * inv * (x - mean)
+        # PDF formula components
+        det_cov = np.linalg.det(self.cov)
+        inv_cov = np.linalg.inv(self.cov)
+
+        # Calculate exponents part
         diff = x - self.mean
-        exponent = -0.5 * np.matmul(np.matmul(diff.T, inv), diff)
-        
-        # Calculate the normalization factor denominator
-        denominator = np.sqrt(((2 * np.pi) ** d) * det)
-        
-        # Extract scalar value from the 1x1 resulting matrix
+        exponent = -0.5 * np.dot(np.dot(diff.T, inv_cov), diff)
+
+        # Calculate denominator part
+        denominator = np.sqrt(((2 * np.pi) ** d) * det_cov)
+
+        # Final PDF value calculation
         pdf_val = np.exp(exponent) / denominator
 
-        return pdf_val[0, 0]
+        # Return as a pure scalar float
+        return float(pdf_val)
