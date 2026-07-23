@@ -43,9 +43,9 @@ class MultiNormal:
         det_cov = np.linalg.det(self.cov)
         inv_cov = np.linalg.inv(self.cov)
 
-        # Calculate exponents part
+        # Calculate exponent part with stable matrix multiplication order
         diff = x - self.mean
-        exponent = -0.5 * np.dot(np.dot(diff.T, inv_cov), diff)
+        exponent = -0.5 * np.sum(np.dot(diff.T, inv_cov) * diff.T)
 
         # Calculate denominator part
         denominator = np.sqrt(((2 * np.pi) ** d) * det_cov)
