@@ -20,7 +20,11 @@ class MultiNormal:
                 "data must contain multiple data points"
             )
 
-        self.mean = np.mean(data, axis=1, keepdims=True)
+        self.mean = np.mean(
+            data,
+            axis=1,
+            keepdims=True
+        )
 
         centered = data - self.mean
 
@@ -61,5 +65,9 @@ class MultiNormal:
 
         pdf_value = np.exp(exponent) / denominator
 
-        return float(np.format_float_positional(pdf_value.item(), precision=19))
-
+        return float(
+            np.format_float_positional(
+                pdf_value.item(),
+                precision=19
+            )
+        )
