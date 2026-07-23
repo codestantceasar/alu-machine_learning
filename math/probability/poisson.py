@@ -34,7 +34,7 @@ class Poisson:
         if k < 0:
             return 0
 
-        # Define Euler's number explicitly as requested by the project manual
+        # Define Euler's number explicitly
         e = 2.7182818285
 
         # Calculate the factorial of k (k!)
@@ -45,3 +45,21 @@ class Poisson:
         # Calculate the Poisson Probability Mass Function (PMF)
         pmf_value = ((e ** -self.lambtha) * (self.lambtha ** k)) / factorial
         return pmf_value
+
+    def cdf(self, k):
+        """
+        Calculates the value of the CDF for a given number of "successes".
+        """
+        # Convert k to an integer if it's not one
+        k = int(k)
+
+        # If k is out of range (less than 0), return 0
+        if k < 0:
+            return 0
+
+        # Sum up PMF values from 0 up to and including k
+        cdf_value = 0.0
+        for i in range(k + 1):
+            cdf_value += self.pmf(i)
+
+        return cdf_value
