@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """Poisson distribution module"""
 
-import numpy as np
-
 
 class Poisson:
     """Represents a Poisson distribution"""
 
     def __init__(self, data=None, lambtha=1.):
-        """Initialize Poisson distribution"""
+        """Initialize the Poisson distribution"""
 
         if data is None:
             if lambtha <= 0:
@@ -29,4 +27,4 @@ class Poisson:
                     "data must contain multiple values"
                 )
 
-            self.lambtha = float(np.mean(data))
+            self.lambtha = float(sum(data) / len(data))
