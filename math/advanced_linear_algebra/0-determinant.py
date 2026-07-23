@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+"""Calculates the determinant of a matrix using pure Python"""
+
+
+def determinant(matrix):
+    """Computes the determinant of a square matrix"""
+    # Check if the matrix is a list
+    if not isinstance(matrix, list):
+        raise TypeError("matrix must be a list of lists")
+
+    # Check if empty list []
+    if len(matrix) == 0:
+        raise TypeError("matrix must be a list of lists")
+
+    # Check if elements inside are lists
+    for row in matrix:
+        if not isinstance(row, list):
+            raise TypeError("matrix must be a list of lists")
+
+    # Handle the specific 0x0 matrix case [[]]
+    if len(matrix) == 1 and len(matrix[0]) == 0:
+        return 1
+
+    # Check if matrix is square
+    n = len(matrix)
+    for row in matrix:
+        if len(row) != n:
+            raise ValueError("matrix must be a square matrix")
+
+    # Base case for 1x1 matrix
+    if n == 1:
+        return matrix[0][0]
+
+    # Base case for 2x2 matrix
+    if n == 2:
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
+    # Recursive step for nxn matrix using Laplace expansion
+    det = 0
+    for c in range(n):
+        # Create sub-matrix by excluding the 0th row and the c-th column
+        sub_matrix = [row[:c] + row[c + 1:] for row in matrix[1:]]
+        # Alternate signs (-1)^c * entry * determinant(sub_matrix)
+        sign = 1 if c % 2 == 0 else -1
+        det += sign * matrix[0][c] * determinant(sub_matrix)
+
+    return det
