@@ -50,24 +50,19 @@ class MultiNormal:
 
         diff = x - self.mean
 
-        determinant = np.linalg.det(self.cov)
+        inv_cov = np.linalg.inv(self.cov)
 
-        inverse = np.linalg.inv(self.cov)
-
-        exponent = -0.5 * np.dot(
-            np.dot(diff.T, inverse),
+        exponent = -0.5 * np.matmul(
+            np.matmul(
+                diff.T,
+                inv_cov
+            ),
             diff
         )
 
         denominator = np.sqrt(
-            ((2 * np.pi) ** d) * determinant
+            ((2 * np.pi) ** d) *
+            np.linalg.det(self.cov)
         )
 
-        pdf_value = np.exp(exponent) / denominator
-
-        return float(
-            np.format_float_positional(
-                pdf_value.item(),
-                precision=19
-            )
-        )
+        return (np.exp(exponent) / denominator)[0][0]
