@@ -22,6 +22,7 @@ class Exponential:
                 raise TypeError("data must be a list")
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
+
             # For exponential distribution, lambtha = 1 / mean
             mean = sum(data) / len(data)
             self.lambtha = float(1 / mean)
@@ -30,13 +31,27 @@ class Exponential:
         """
         Calculates the value of the PDF for a given time period.
         """
+        if x < 0:
+            return 0
+
+        # Define Euler's number explicitly
+        e = 2.7182818285
+
+        # Calculate Exponential PDF: lambtha * e^(-lambtha * x)
+        pdf_value = self.lambtha * (e ** (-self.lambtha * x))
+        return pdf_value
+
+    def cdf(self, x):
+        """
+        Calculates the value of the CDF for a given time period.
+        """
         # If x is out of range (less than 0), return 0
         if x < 0:
             return 0
 
-        # Define Euler's number explicitly as required by the project
+        # Define Euler's number explicitly
         e = 2.7182818285
 
-        # Calculate and return Exponential PDF: lambtha * e^(-lambtha * x)
-        pdf_value = self.lambtha * (e ** (-self.lambtha * x))
-        return pdf_value
+        # Calculate and return Exponential CDF: 1 - e^(-lambtha * x)
+        cdf_value = 1 - (e ** (-self.lambtha * x))
+        return cdf_value
