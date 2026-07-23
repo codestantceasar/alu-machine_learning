@@ -42,3 +42,38 @@ class Normal:
         Calculates the x-value of a given z-score.
         """
         return (z * self.stddev) + self.mean
+
+    def pdf(self, x):
+        """
+        Calculates the value of the PDF for a given x-value.
+        """
+        pi = 3.1415926536
+        e = 2.7182818285
+
+        # Calculate exponent: -0.5 * ((x - mean) / stddev) ** 2
+        exponent = -0.5 * (((x - self.mean) / self.stddev) ** 2)
+
+        # Calculate denominator: stddev * sqrt(2 * pi)
+        denominator = self.stddev * ((2 * pi) ** 0.5)
+
+        # PDF value calculation
+        pdf_value = (e ** exponent) / denominator
+        return pdf_value
+
+    def cdf(self, x):
+        """
+        Calculates the value of the CDF for a given x-value.
+        """
+        pi = 3.1415926536
+
+        # Value to plug into error function (erf)
+        w = (x - self.mean) / (self.stddev * (2 ** 0.5))
+
+        # Maclaurin series approximation for erf(w) up to the 9th power term
+        erf = (2 / (pi ** 0.5)) * (
+            w - (w ** 3) / 3 + (w ** 5) / 10 - (w ** 7) / 42 + (w ** 9) / 216
+        )
+
+        # Normal CDF formula using the calculated erf value
+        cdf_value = 0.5 * (1 + erf)
+        return cdf_value
