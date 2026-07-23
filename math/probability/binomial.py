@@ -67,6 +67,8 @@ class Binomial:
         # Calculate binomial coefficient: n! / (k! * (n - k)!)
         combination = n_fact / (k_fact * nk_fact)
 
-        # Calculate PMF value
-        pmf_value = combination * (self.p ** k) * ((1 - self.p) ** (self.n - k))
+        # Calculate PMF value (Broken into 2 lines for PEP8 compliance)
+        pmf_value = combination * (self.p ** k) * (
+            (1 - self.p) ** (self.n - k)
+        )
         return pmf_value
