@@ -42,17 +42,17 @@ class Poisson:
         for i in range(1, k + 1):
             factorial *= i
 
+        # Calculate e^lambda using Taylor series
         exp_value = 1
         term = 1
 
-        # Calculate e^(-lambda) using series expansion
-        x = -self.lambtha
-
-        for i in range(1, 100):
-            term *= x / i
+        for i in range(1, 200):
+            term *= self.lambtha / i
             exp_value += term
 
+        e_negative = 1 / exp_value
+
         return (
-            exp_value *
+            e_negative *
             (self.lambtha ** k)
         ) / factorial
