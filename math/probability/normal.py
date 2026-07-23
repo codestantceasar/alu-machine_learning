@@ -30,3 +30,15 @@ class Normal:
             # Calculate the standard deviation (population stddev)
             variance_sum = sum((x - self.mean) ** 2 for x in data)
             self.stddev = float((variance_sum / len(data)) ** 0.5)
+
+    def z_score(self, x):
+        """
+        Calculates the z-score of a given x-value.
+        """
+        return (x - self.mean) / self.stddev
+
+    def x_value(self, z):
+        """
+        Calculates the x-value of a given z-score.
+        """
+        return (z * self.stddev) + self.mean
