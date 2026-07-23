@@ -9,7 +9,7 @@ class Exponential:
     """
     Class that represents an exponential distribution.
     """
-    def __init__(self, data=None, lambtha=1.:
+    def __init__(self, data=None, lambtha=1.0):
         """
         Initializes the Exponential distribution.
         """
