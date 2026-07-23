@@ -42,11 +42,17 @@ class Poisson:
         for i in range(1, k + 1):
             factorial *= i
 
-        e = 2.718281828459045
+        exp_value = 1
+        term = 1
 
-        probability = (
-            (e ** (-self.lambtha)) *
+        # Calculate e^(-lambda) using series expansion
+        x = -self.lambtha
+
+        for i in range(1, 100):
+            term *= x / i
+            exp_value += term
+
+        return (
+            exp_value *
             (self.lambtha ** k)
         ) / factorial
-
-        return probability
