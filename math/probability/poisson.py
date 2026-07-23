@@ -1,58 +1,47 @@
 #!/usr/bin/env python3
-"""Poisson distribution module"""
+"""
+This module contains the Poisson class that represents a Poisson distribution.
+"""
 
 
 class Poisson:
-    """Represents a Poisson distribution"""
-
-    def __init__(self, data=None, lambtha=1.):
-        """Initialize the Poisson distribution"""
-
+    """
+    Class that represents a Poisson distribution.
+    """
+    def __init__(self, data=None, lambtha=1.0):
+        """
+        Initializes the Poisson distribution.
+        """
         if data is None:
             if lambtha <= 0:
-                raise ValueError(
-                    "lambtha must be a positive value"
-                )
-
+                raise ValueError("lambtha must be a positive value")
             self.lambtha = float(lambtha)
-
         else:
             if not isinstance(data, list):
-                raise TypeError(
-                    "data must be a list"
-                )
-
+                raise TypeError("data must be a list")
             if len(data) < 2:
-                raise ValueError(
-                    "data must contain multiple values"
-                )
-
+                raise ValueError("data must contain multiple values")
             self.lambtha = float(sum(data) / len(data))
 
     def pmf(self, k):
-        """Calculates the PMF for a given number of successes"""
-
+        """
+        Calculates the value of the PMF for a given number of "successes".
+        """
+        # Convert k to an integer if it's not one
         k = int(k)
 
+        # If k is out of range (less than 0), return 0
         if k < 0:
             return 0
 
-        factorial = 1
+        # Define Euler's number explicitly as requested by the project manual
+        e = 2.7182818285
 
+        # Calculate the factorial of k (k!)
+        factorial = 1
         for i in range(1, k + 1):
             factorial *= i
 
-        # Calculate e^lambda using Taylor series
-        exp_value = 1
-        term = 1
-
-        for i in range(1, 200):
-            term *= self.lambtha / i
-            exp_value += term
-
-        e_negative = 1 / exp_value
-
-        return (
-            e_negative *
-            (self.lambtha ** k)
-        ) / factorial
+        # Calculate the Poisson Probability Mass Function (PMF)
+        pmf_value = ((e ** -self.lambtha) * (self.lambtha ** k)) / factorial
+        return pmf_value
