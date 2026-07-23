@@ -67,8 +67,26 @@ class Binomial:
         # Calculate binomial coefficient: n! / (k! * (n - k)!)
         combination = n_fact / (k_fact * nk_fact)
 
-        # Calculate PMF value (Broken into 2 lines for PEP8 compliance)
+        # Calculate PMF value
         pmf_value = combination * (self.p ** k) * (
             (1 - self.p) ** (self.n - k)
         )
         return pmf_value
+
+    def cdf(self, k):
+        """
+        Calculates the value of the CDF for a given number of "successes".
+        """
+        # Convert k to an integer if it's not one
+        k = int(k)
+
+        # If k is out of range, return 0
+        if k < 0 or k > self.n:
+            return 0
+
+        # Sum up PMF values from 0 up to and including k
+        cdf_value = 0.0
+        for i in range(k + 1):
+            cdf_value += self.pmf(i)
+
+        return cdf_value
