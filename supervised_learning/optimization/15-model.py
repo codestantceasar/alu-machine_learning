@@ -50,7 +50,7 @@ def model(Data_train, Data_valid, layers, activations,
         beta1=beta1,
         beta2=beta2,
         epsilon=epsilon
-    ).minimize(loss)
+    ).minimize(loss, global_step=global_step)
 
     init = tf.global_variables_initializer()
     saver = tf.train.Saver()
