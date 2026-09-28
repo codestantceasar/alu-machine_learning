@@ -12,19 +12,11 @@ class DeepNeuralNetwork:
 
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
-
         if nx < 1:
             raise ValueError("nx must be a positive integer")
 
-        if type(layers) is not list or len(layers) == 0:
-            raise TypeError(
-                "layers must be a list of positive integers"
-            )
-
-        if not all(
-            type(nodes) is int and nodes > 0
-            for nodes in layers
-        ):
+        if (type(layers) is not list or len(layers) == 0 or
+                not all(type(x) is int and x > 0 for x in layers)):
             raise TypeError(
                 "layers must be a list of positive integers"
             )
@@ -36,25 +28,28 @@ class DeepNeuralNetwork:
         for i in range(self.__L):
             if i == 0:
                 self.__weights["W1"] = (
-                    np.random.randn(layers[i], nx)
+                    np.random.randn(layers[0], nx)
                     * np.sqrt(2 / nx)
+                )
+                self.__weights["b1"] = np.zeros(
+                    (layers[0], 1)
                 )
             else:
                 self.__weights["W{}".format(i + 1)] = (
                     np.random.randn(
                         layers[i],
                         layers[i - 1]
+                    ) * np.sqrt(
+                        2 / layers[i - 1]
                     )
-                    * np.sqrt(2 / layers[i - 1])
                 )
-
-            self.__weights["b{}".format(i + 1)] = (
-                np.zeros((layers[i], 1))
-            )
+                self.__weights["b{}".format(i + 1)] = (
+                    np.zeros((layers[i], 1))
+                )
 
     @property
     def L(self):
-        """Getter for L"""
+        """Getter for number of layers"""
         return self.__L
 
     @property
