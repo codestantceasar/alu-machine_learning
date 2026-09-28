@@ -2,6 +2,7 @@
 """Model"""
 
 import tensorflow as tf
+import numpy as np
 
 shuffle_data = __import__('2-shuffle_data').shuffle_data
 create_placeholders = __import__('0-create_placeholders').create_placeholders
