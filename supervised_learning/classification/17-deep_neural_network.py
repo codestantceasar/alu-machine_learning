@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deep Neural Network"""
+"""Deep Neural Network class"""
 
 import numpy as np
 
@@ -8,7 +8,13 @@ class DeepNeuralNetwork:
     """Defines a deep neural network performing binary classification"""
 
     def __init__(self, nx, layers):
-        """Class constructor"""
+        """
+        Class constructor
+
+        Args:
+            nx (int): Number of input features
+            layers (list): Number of nodes in each layer
+        """
 
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
@@ -39,18 +45,22 @@ class DeepNeuralNetwork:
                     np.random.randn(layers[i], nx)
                     * np.sqrt(2 / nx)
                 )
+                self.__weights["b1"] = np.zeros(
+                    (layers[i], 1)
+                )
             else:
                 self.__weights["W{}".format(i + 1)] = (
                     np.random.randn(
                         layers[i],
                         layers[i - 1]
                     )
-                    * np.sqrt(2 / layers[i - 1])
+                    * np.sqrt(
+                        2 / layers[i - 1]
+                    )
                 )
-
-            self.__weights["b{}".format(i + 1)] = np.zeros(
-                (layers[i], 1)
-            )
+                self.__weights["b{}".format(i + 1)] = (
+                    np.zeros((layers[i], 1))
+                )
 
     @property
     def L(self):
