@@ -8,7 +8,7 @@ class DeepNeuralNetwork:
     """Defines a deep neural network performing binary classification"""
 
     def __init__(self, nx, layers):
-        """Class constructor"""
+        """Initialize the deep neural network"""
 
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
@@ -27,26 +27,26 @@ class DeepNeuralNetwork:
 
         prev = nx
 
-        for i, nodes in enumerate(layers):
-            if type(nodes) is not int or nodes <= 0:
+        for i in range(self.__L):
+            if type(layers[i]) is not int or layers[i] <= 0:
                 raise TypeError(
                     "layers must be a list of positive integers"
                 )
 
             self.__weights["W{}".format(i + 1)] = (
-                np.random.randn(nodes, prev)
+                np.random.randn(layers[i], prev)
                 * np.sqrt(2 / prev)
             )
 
             self.__weights["b{}".format(i + 1)] = np.zeros(
-                (nodes, 1)
+                (layers[i], 1)
             )
 
-            prev = nodes
+            prev = layers[i]
 
     @property
     def L(self):
-        """Getter for number of layers"""
+        """Getter for L"""
         return self.__L
 
     @property
