@@ -40,28 +40,15 @@ def create_batch_norm_layer(prev, n, activation):
 
 
 def forward_prop(x, layer_sizes=[], activations=[]):
-    """forward propagation with batch normalization"""
+    """creates forward propagation graph"""
 
     output = x
 
     for i in range(len(layer_sizes)):
-        if activations[i] is None:
-            initializer = (
-                tf.contrib.layers
-                .variance_scaling_initializer(mode="FAN_AVG")
-            )
-
-            output = tf.layers.Dense(
-                units=layer_sizes[i],
-                activation=None,
-                kernel_initializer=initializer
-            )(output)
-
-        else:
-            output = create_batch_norm_layer(
-                output,
-                layer_sizes[i],
-                activations[i]
-            )
+        output = create_batch_norm_layer(
+            output,
+            layer_sizes[i],
+            activations[i]
+        )
 
     return output

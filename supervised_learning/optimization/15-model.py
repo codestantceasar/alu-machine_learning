@@ -2,7 +2,6 @@
 """Model"""
 
 import tensorflow as tf
-import numpy as np
 
 shuffle_data = __import__('2-shuffle_data').shuffle_data
 create_placeholders = __import__('0-create_placeholders').create_placeholders
@@ -33,12 +32,12 @@ def model(Data_train, Data_valid, layers, activations,
     tf.add_to_collection('x', x)
     tf.add_to_collection('y', y)
     tf.add_to_collection('y_pred', y_pred)
-    tf.add_to_collection('accuracy', accuracy)
     tf.add_to_collection('loss', loss)
+    tf.add_to_collection('accuracy', accuracy)
 
     global_step = tf.Variable(0, trainable=False)
 
-    alpha_decay = learning_rate_decay(
+    alpha = learning_rate_decay(
         alpha,
         decay_rate,
         global_step,
@@ -46,7 +45,7 @@ def model(Data_train, Data_valid, layers, activations,
     )
 
     train_op = tf.train.AdamOptimizer(
-        learning_rate=alpha_decay,
+        learning_rate=alpha,
         beta1=beta1,
         beta2=beta2,
         epsilon=epsilon
@@ -113,7 +112,7 @@ def model(Data_train, Data_valid, layers, activations,
                 )
 
                 if (step + 1) % 100 == 0:
-                    batch_cost, batch_acc = sess.run(
+                    cost, acc = sess.run(
                         [loss, accuracy],
                         feed_dict={
                             x: X_batch,
@@ -122,9 +121,7 @@ def model(Data_train, Data_valid, layers, activations,
                     )
 
                     print("\tStep {}:".format(step + 1))
-                    print("\t\tCost: {}".format(batch_cost))
-                    print("\t\tAccuracy: {}".format(batch_acc))
+                    print("\t\tCost: {}".format(cost))
+                    print("\t\tAccuracy: {}".format(acc))
 
-        save = saver.save(sess, save_path)
-
-    return save
+        return saver.save(sess, save_path)
