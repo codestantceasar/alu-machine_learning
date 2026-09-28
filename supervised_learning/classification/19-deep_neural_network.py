@@ -77,7 +77,7 @@ class DeepNeuralNetwork:
             self.__cache["A{}".format(i)] = A
 
         return A, self.__cache
-    
+
     def cost(self, Y, A):
         """Calculates the cost of the model"""
 
@@ -87,5 +87,5 @@ class DeepNeuralNetwork:
             Y * np.log(A) +
             (1 - Y) * np.log(1.0000001 - A)
         ) / m
-        
+
         return cost
