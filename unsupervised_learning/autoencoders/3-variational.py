@@ -99,7 +99,8 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
     auto.add_loss(vae_loss)
 
     auto.compile(
-        optimizer='adam'
+        optimizer='adam',
+        loss='binary_crossentropy'
     )
 
     return encoder, decoder, auto
