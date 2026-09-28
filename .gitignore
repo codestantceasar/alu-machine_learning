@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 0-main.py
 check.py
-convert.py
+convert.py*.pkl
+*.pkl
