@@ -22,10 +22,21 @@ def model(Data_train, Data_valid, layers, activations,
     nx = Data_train[0].shape[1]
     classes = Data_train[1].shape[1]
 
-    # 1. Setup inputs
+    # Keep original order to preserve initialization seed
     x, y = create_placeholders(nx, classes)
 
-    # 2. Define global step and decay before forward propagation to lock graph seeds
+    y_pred = forward_prop(x, layers, activations)
+
+    loss = calculate_loss(y, y_pred)
+
+    accuracy = calculate_accuracy(y, y_pred)
+
+    tf.add_to_collection('x', x)
+    tf.add_to_collection('y', y)
+    tf.add_to_collection('y_pred', y_pred)
+    tf.add_to_collection('loss', loss)
+    tf.add_to_collection('accuracy', accuracy)
+
     global_step = tf.Variable(0, trainable=False)
 
     alpha_decay = learning_rate_decay(
@@ -35,19 +46,7 @@ def model(Data_train, Data_valid, layers, activations,
         1
     )
 
-    # 3. Model architecture and metrics (passing down epsilon parameter)
-    y_pred = forward_prop(x, layers, activations, epsilon=epsilon)
-
-    loss = calculate_loss(y, y_pred)
-    accuracy = calculate_accuracy(y, y_pred)
-
-    tf.add_to_collection('x', x)
-    tf.add_to_collection('y', y)
-    tf.add_to_collection('y_pred', y_pred)
-    tf.add_to_collection('loss', loss)
-    tf.add_to_collection('accuracy', accuracy)
-
-    # 4. Optimizer configuration (No global_step inside minimize to keep alpha stable within epoch)
+    # Removed global_step=global_step to keep learning rate stable within epochs
     train_op = tf.train.AdamOptimizer(
         learning_rate=alpha_decay,
         beta1=beta1,
@@ -125,7 +124,7 @@ def model(Data_train, Data_valid, layers, activations,
                     print("\t\tCost: {}".format(cost))
                     print("\t\tAccuracy: {}".format(acc))
 
-            # 5. Increment learning rate tracking step manually at the end of each epoch
+            # Increment global_step per epoch instead of per mini-batch step
             sess.run(global_step.assign_add(1))
 
         return saver.save(sess, save_path)
