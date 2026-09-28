@@ -9,7 +9,6 @@ K = keras.backend
 def autoencoder(input_dims, hidden_layers, latent_dims):
     """Creates a variational autoencoder"""
 
-    # Encoder
     inputs = keras.Input(shape=(input_dims,))
 
     x = inputs
@@ -30,7 +29,7 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
     )(x)
 
     def sampling(args):
-        """Samples from latent distribution"""
+        """Sampling function"""
         mu, log_var = args
 
         epsilon = K.random_normal(
@@ -48,8 +47,9 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
         [z, mu, log_var]
     )
 
-    # Decoder
-    latent_inputs = keras.Input(shape=(latent_dims,))
+    latent_inputs = keras.Input(
+        shape=(latent_dims,)
+    )
 
     x = latent_inputs
 
@@ -69,26 +69,23 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
         outputs
     )
 
-    # Autoencoder
-    encoded, mu_out, log_var_out = encoder(inputs)
-    reconstructed = decoder(encoded)
+    auto_outputs = decoder(z)
 
     auto = keras.Model(
         inputs,
-        reconstructed
+        auto_outputs
     )
 
-    # Loss
     reconstruction_loss = keras.losses.binary_crossentropy(
         inputs,
-        reconstructed
+        auto_outputs
     )
 
     reconstruction_loss *= input_dims
 
-    kl_loss = 1 + log_var_out
-    kl_loss -= K.square(mu_out)
-    kl_loss -= K.exp(log_var_out)
+    kl_loss = 1 + log_var
+    kl_loss -= K.square(mu)
+    kl_loss -= K.exp(log_var)
     kl_loss = K.sum(
         kl_loss,
         axis=-1
@@ -102,7 +99,7 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
     auto.add_loss(vae_loss)
 
     auto.compile(
-        optimizer=keras.optimizers.Adam()
+        optimizer='adam'
     )
 
     return encoder, decoder, auto
