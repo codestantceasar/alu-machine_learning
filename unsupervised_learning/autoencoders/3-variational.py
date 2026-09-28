@@ -80,7 +80,7 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
 
     reconstruction_loss = keras.losses.binary_crossentropy(
         inputs,
-        auto_outputs
+        decoded
     )
 
     reconstruction_loss *= input_dims
