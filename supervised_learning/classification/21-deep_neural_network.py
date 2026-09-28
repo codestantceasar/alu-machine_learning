@@ -12,6 +12,7 @@ class DeepNeuralNetwork:
 
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
+
         if nx < 1:
             raise ValueError("nx must be a positive integer")
 
@@ -20,36 +21,28 @@ class DeepNeuralNetwork:
                 "layers must be a list of positive integers"
             )
 
-        for nodes in layers:
+        self.__L = len(layers)
+        self.__cache = {}
+        self.__weights = {}
+
+        prev = nx
+
+        for i, nodes in enumerate(layers):
             if type(nodes) is not int or nodes <= 0:
                 raise TypeError(
                     "layers must be a list of positive integers"
                 )
 
-        self.__L = len(layers)
-        self.__cache = {}
-        self.__weights = {}
+            self.__weights["W{}".format(i + 1)] = (
+                np.random.randn(nodes, prev)
+                * np.sqrt(2 / prev)
+            )
 
-        for i in range(self.__L):
-            if i == 0:
-                self.__weights["W1"] = (
-                    np.random.randn(layers[0], nx)
-                    * np.sqrt(2 / nx)
-                )
-                self.__weights["b1"] = np.zeros(
-                    (layers[0], 1)
-                )
-            else:
-                self.__weights["W{}".format(i + 1)] = (
-                    np.random.randn(
-                        layers[i],
-                        layers[i - 1]
-                    )
-                    * np.sqrt(2 / layers[i - 1])
-                )
-                self.__weights["b{}".format(i + 1)] = (
-                    np.zeros((layers[i], 1))
-                )
+            self.__weights["b{}".format(i + 1)] = np.zeros(
+                (nodes, 1)
+            )
+
+            prev = nodes
 
     @property
     def L(self):
@@ -83,13 +76,14 @@ class DeepNeuralNetwork:
             self.__cache["A{}".format(layer)] = (
                 1 / (1 + np.exp(-Z))
             )
+
         return (
             self.__cache["A{}".format(self.__L)],
             self.__cache
         )
 
     def cost(self, Y, A):
-        """Calculates the cost of the model"""
+        """Calculates cost"""
 
         m = Y.shape[1]
 
@@ -99,7 +93,7 @@ class DeepNeuralNetwork:
         ) / m
 
     def evaluate(self, X, Y):
-        """Evaluates the neural network"""
+        """Evaluates network predictions"""
 
         A, _ = self.forward_prop(X)
 
@@ -114,7 +108,6 @@ class DeepNeuralNetwork:
         weights_copy = self.__weights.copy()
 
         for layer in range(self.__L, 0, -1):
-
             A_curr = cache["A{}".format(layer)]
             A_prev = cache["A{}".format(layer - 1)]
 
@@ -123,7 +116,9 @@ class DeepNeuralNetwork:
             else:
                 dZ = (
                     np.matmul(
-                        weights_copy["W{}".format(layer + 1)].T,
+                        weights_copy[
+                            "W{}".format(layer + 1)
+                        ].T,
                         dZ
                     )
                     * A_curr
@@ -131,6 +126,7 @@ class DeepNeuralNetwork:
                 )
 
             dW = np.matmul(dZ, A_prev.T) / m
+
             db = np.sum(
                 dZ,
                 axis=1,
