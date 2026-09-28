@@ -155,7 +155,7 @@ class NeuralNetwork:
                 )
 
         if graph:
-            plt.plot(steps, costs)
+            plt.plot(steps, costs, 'b')
             plt.xlabel("iteration")
             plt.ylabel("cost")
             plt.title("Training Cost")
