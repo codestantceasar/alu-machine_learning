@@ -85,10 +85,14 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
 
     reconstruction_loss *= input_dims
 
-    kl_loss = -0.5 * K.sum(
-        1 + log_var - K.square(mu) - K.exp(log_var),
+    kl_loss = 1 + log_var_out
+    kl_loss -= K.square(mu_out)
+    kl_loss -= K.exp(log_var_out)
+    kl_loss = K.sum(
+        kl_loss,
         axis=-1
     )
+    kl_loss *= -0.5
 
     vae_loss = K.mean(
         reconstruction_loss + kl_loss
