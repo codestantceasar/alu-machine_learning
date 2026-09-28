@@ -44,7 +44,7 @@ def model(Data_train, Data_valid, layers, activations,
         beta1=beta1,
         beta2=beta2,
         epsilon=epsilon
-    ).minimize(loss, global_step=global_step)
+    ).minimize(loss)
 
     init = tf.global_variables_initializer()
     saver = tf.train.Saver()
@@ -116,4 +116,5 @@ def model(Data_train, Data_valid, layers, activations,
                     print("\t\tCost: {}".format(batch_cost))
                     print("\t\tAccuracy: {}".format(batch_acc))
 
-        return saver.save(sess, save_path)
+        save = saver.save(sess, save_path)
+        return save
