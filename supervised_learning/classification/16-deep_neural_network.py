@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Deep Neural Network"""
 
+
 import numpy as np
 
 
@@ -8,7 +9,7 @@ class DeepNeuralNetwork:
     """Defines a deep neural network performing binary classification"""
 
     def __init__(self, nx, layers):
-        """Initialize the deep neural network"""
+        """Class constructor"""
 
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
@@ -21,40 +22,25 @@ class DeepNeuralNetwork:
                 "layers must be a list of positive integers"
             )
 
-        self.__L = len(layers)
-        self.__cache = {}
-        self.__weights = {}
+        self.L = len(layers)
+        self.cache = {}
+        self.weights = {}
 
         prev = nx
 
-        for i in range(self.__L):
-            if type(layers[i]) is not int or layers[i] <= 0:
+        for i, nodes in enumerate(layers):
+            if type(nodes) is not int or nodes <= 0:
                 raise TypeError(
                     "layers must be a list of positive integers"
                 )
 
-            self.__weights["W{}".format(i + 1)] = (
-                np.random.randn(layers[i], prev)
+            self.weights["W{}".format(i + 1)] = (
+                np.random.randn(nodes, prev)
                 * np.sqrt(2 / prev)
             )
 
-            self.__weights["b{}".format(i + 1)] = np.zeros(
-                (layers[i], 1)
+            self.weights["b{}".format(i + 1)] = np.zeros(
+                (nodes, 1)
             )
 
-            prev = layers[i]
-
-    @property
-    def L(self):
-        """Getter for L"""
-        return self.__L
-
-    @property
-    def cache(self):
-        """Getter for cache"""
-        return self.__cache
-
-    @property
-    def weights(self):
-        """Getter for weights"""
-        return self.__weights
+            prev = nodes
