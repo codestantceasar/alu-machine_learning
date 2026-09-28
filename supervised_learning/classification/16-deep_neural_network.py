@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Deep Neural Network"""
 
-
 import numpy as np
 
 
@@ -22,9 +21,9 @@ class DeepNeuralNetwork:
                 "layers must be a list of positive integers"
             )
 
-        self.L = len(layers)
-        self.cache = {}
-        self.weights = {}
+        self.__L = len(layers)
+        self.__cache = {}
+        self.__weights = {}
 
         prev = nx
 
@@ -34,13 +33,28 @@ class DeepNeuralNetwork:
                     "layers must be a list of positive integers"
                 )
 
-            self.weights["W{}".format(i + 1)] = (
+            self.__weights["W{}".format(i + 1)] = (
                 np.random.randn(nodes, prev)
                 * np.sqrt(2 / prev)
             )
 
-            self.weights["b{}".format(i + 1)] = np.zeros(
+            self.__weights["b{}".format(i + 1)] = np.zeros(
                 (nodes, 1)
             )
 
             prev = nodes
+
+    @property
+    def L(self):
+        """Getter for number of layers"""
+        return self.__L
+
+    @property
+    def cache(self):
+        """Getter for cache"""
+        return self.__cache
+
+    @property
+    def weights(self):
+        """Getter for weights"""
+        return self.__weights
