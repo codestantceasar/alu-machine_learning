@@ -30,6 +30,12 @@ def model(Data_train, Data_valid, layers, activations,
 
     accuracy = calculate_accuracy(y, y_pred)
 
+    tf.add_to_collection('x', x)
+    tf.add_to_collection('y', y)
+    tf.add_to_collection('y_pred', y_pred)
+    tf.add_to_collection('accuracy', accuracy)
+    tf.add_to_collection('loss', loss)
+
     global_step = tf.Variable(0, trainable=False)
 
     alpha_decay = learning_rate_decay(
@@ -115,6 +121,8 @@ def model(Data_train, Data_valid, layers, activations,
                     print("\tStep {}:".format(step + 1))
                     print("\t\tCost: {}".format(batch_cost))
                     print("\t\tAccuracy: {}".format(batch_acc))
+
+            sess.run(global_step.assign(epoch + 1))
 
         save = saver.save(sess, save_path)
         return save
