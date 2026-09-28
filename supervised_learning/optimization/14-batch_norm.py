@@ -2,7 +2,6 @@
 """Batch normalization layer"""
 
 import tensorflow as tf
-import numpy as np
 
 
 def create_batch_norm_layer(prev, n, activation):
