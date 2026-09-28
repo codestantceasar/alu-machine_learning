@@ -38,22 +38,20 @@ def model(Data_train, Data_valid, layers, activations,
 
     global_step = tf.Variable(0, trainable=False)
 
-    alpha = learning_rate_decay(
+    alpha_decay = learning_rate_decay(
         alpha,
         decay_rate,
         global_step,
         1
     )
 
+    # REMOVED: global_step=global_step here to prevent per-mini-batch updates
     train_op = tf.train.AdamOptimizer(
-        learning_rate=alpha,
+        learning_rate=alpha_decay,
         beta1=beta1,
         beta2=beta2,
         epsilon=epsilon
-    ).minimize(
-        loss,
-        global_step=global_step
-    )
+    ).minimize(loss)
 
     init = tf.global_variables_initializer()
     saver = tf.train.Saver()
@@ -124,5 +122,8 @@ def model(Data_train, Data_valid, layers, activations,
                     print("\tStep {}:".format(step + 1))
                     print("\t\tCost: {}".format(cost))
                     print("\t\tAccuracy: {}".format(acc))
+
+            # ADDED: Increment global_step manually once per epoch
+            sess.run(global_step.assign_add(1))
 
         return saver.save(sess, save_path)
