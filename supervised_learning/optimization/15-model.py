@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Model"""
 
-import numpy as np
 import tensorflow as tf
 
 shuffle_data = __import__('2-shuffle_data').shuffle_data
@@ -51,7 +50,7 @@ def model(Data_train, Data_valid, layers, activations,
         beta2=beta2,
         epsilon=epsilon
     ).minimize(
-        loss, 
+        loss,
         global_step=global_step
     )
 
@@ -126,4 +125,5 @@ def model(Data_train, Data_valid, layers, activations,
                     print("\t\tAccuracy: {}".format(batch_acc))
 
         save = saver.save(sess, save_path)
-        return save
+
+    return save
