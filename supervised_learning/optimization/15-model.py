@@ -2,7 +2,6 @@
 """Model"""
 
 import tensorflow as tf
-import numpy as np
 
 shuffle_data = __import__('2-shuffle_data').shuffle_data
 create_placeholders = __import__('0-create_placeholders').create_placeholders
@@ -22,7 +21,6 @@ def model(Data_train, Data_valid, layers, activations,
     nx = Data_train[0].shape[1]
     classes = Data_train[1].shape[1]
 
-    # Keep original order to preserve initialization seed
     x, y = create_placeholders(nx, classes)
 
     y_pred = forward_prop(x, layers, activations)
@@ -34,8 +32,8 @@ def model(Data_train, Data_valid, layers, activations,
     tf.add_to_collection('x', x)
     tf.add_to_collection('y', y)
     tf.add_to_collection('y_pred', y_pred)
-    tf.add_to_collection('loss', loss)
     tf.add_to_collection('accuracy', accuracy)
+    tf.add_to_collection('loss', loss)
 
     global_step = tf.Variable(0, trainable=False)
 
@@ -46,13 +44,15 @@ def model(Data_train, Data_valid, layers, activations,
         1
     )
 
-    # Removed global_step=global_step to keep learning rate stable within epochs
     train_op = tf.train.AdamOptimizer(
         learning_rate=alpha_decay,
         beta1=beta1,
         beta2=beta2,
         epsilon=epsilon
-    ).minimize(loss)
+    ).minimize(
+        loss,
+        global_step=global_step
+    )
 
     init = tf.global_variables_initializer()
     saver = tf.train.Saver()
@@ -112,7 +112,7 @@ def model(Data_train, Data_valid, layers, activations,
                 )
 
                 if (step + 1) % 100 == 0:
-                    cost, acc = sess.run(
+                    batch_cost, batch_acc = sess.run(
                         [loss, accuracy],
                         feed_dict={
                             x: X_batch,
@@ -121,10 +121,7 @@ def model(Data_train, Data_valid, layers, activations,
                     )
 
                     print("\tStep {}:".format(step + 1))
-                    print("\t\tCost: {}".format(cost))
-                    print("\t\tAccuracy: {}".format(acc))
-
-            # Increment global_step per epoch instead of per mini-batch step
-            sess.run(global_step.assign_add(1))
+                    print("\t\tCost: {}".format(batch_cost))
+                    print("\t\tAccuracy: {}".format(batch_acc))
 
         return saver.save(sess, save_path)
