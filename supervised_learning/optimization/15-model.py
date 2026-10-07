@@ -9,7 +9,7 @@ create_placeholders = __import__('0-create_placeholders').create_placeholders
 forward_prop = __import__('14-batch_norm').forward_prop
 calculate_accuracy = __import__('3-calculate_accuracy').calculate_accuracy
 calculate_loss = __import__('4-calculate_loss').calculate_loss
-learning_rate_decay = __import__('12-learning_rate_decay').learning_rate_decay
+learning_rate_decay = __import__('11-learning_rate_decay').learning_rate_decay
 
 
 def model(Data_train, Data_valid, layers, activations,
@@ -17,7 +17,7 @@ def model(Data_train, Data_valid, layers, activations,
           epsilon=1e-8, decay_rate=1,
           batch_size=32, epochs=5,
           save_path='/tmp/model.ckpt'):
-    """builds, trains and saves a neural network"""
+    """Builds, trains, and saves a neural network model"""
 
     nx = Data_train[0].shape[1]
     classes = Data_train[1].shape[1]
@@ -27,7 +27,6 @@ def model(Data_train, Data_valid, layers, activations,
     y_pred = forward_prop(x, layers, activations)
 
     loss = calculate_loss(y, y_pred)
-
     accuracy = calculate_accuracy(y, y_pred)
 
     tf.add_to_collection('x', x)
@@ -112,7 +111,9 @@ def model(Data_train, Data_valid, layers, activations,
                     }
                 )
 
-                if (step + 1) % 100 == 0:
+                if ((step + 1) % 100 == 0 or
+                        (step + 1) == steps):
+
                     batch_cost, batch_acc = sess.run(
                         [loss, accuracy],
                         feed_dict={
