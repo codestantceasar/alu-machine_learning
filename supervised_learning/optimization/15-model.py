@@ -127,3 +127,4 @@ def model(Data_train, Data_valid, layers, activations,
                     print("\t\tAccuracy: {}".format(batch_acc))
 
         return saver.save(sess, save_path)
+    
